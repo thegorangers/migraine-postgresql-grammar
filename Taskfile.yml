@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  generate:
+    silent: true
+    cmds:
+      - task antlr
+  antlr:
+    silent: true
+    dir: tmp
+    cmds:
+      - pwd
+      - rm -rf parser
+      - wget -P parser https://raw.githubusercontent.com/antlr/grammars-v4/refs/heads/master/sql/postgresql/PostgreSQLLexer.g4
+      - wget -P parser https://raw.githubusercontent.com/antlr/grammars-v4/refs/heads/master/sql/postgresql/PostgreSQLParser.g4
+      - wget -P parser https://raw.githubusercontent.com/antlr/grammars-v4/refs/heads/master/sql/postgresql/Go/postgresql_lexer_base.go
+      - wget -P parser https://raw.githubusercontent.com/antlr/grammars-v4/refs/heads/master/sql/postgresql/Go/postgresql_parser_base.go
+      - wget -P parser https://raw.githubusercontent.com/antlr/grammars-v4/refs/heads/master/sql/postgresql/Go/string_stack.go
+      - wget https://raw.githubusercontent.com/antlr/grammars-v4/refs/heads/master/sql/postgresql/Go/transformGrammar.py
+      - python3 transformGrammar.py
+      - wget https://www.antlr.org/download/antlr-4.13.2-complete.jar
+      - java -Xmx500M -cp "./antlr-4.13.2-complete.jar:$CLASSPATH" org.antlr.v4.Tool -Dlanguage=Go -no-visitor -package parser parser/*.g4
+      - task antlr-move-artefacts
+  antlr-move-artefacts:
+    silent: true
+    cmds:
+      - rm -rf pkg
+      - mkdir -p pkg/postgresql
+      - mv tmp/parser/*.go pkg/postgresql
+      - go mod tidy
