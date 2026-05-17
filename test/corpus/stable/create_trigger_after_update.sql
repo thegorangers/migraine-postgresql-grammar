@@ -1,0 +1,4 @@
+CREATE TRIGGER trg_after_update
+AFTER UPDATE ON x
+FOR EACH ROW
+EXECUTE FUNCTION log_update();

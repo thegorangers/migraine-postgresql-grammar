@@ -1,0 +1,1 @@
+PREPARE plan AS SELECT 1; EXECUTE plan;
