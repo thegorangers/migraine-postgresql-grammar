@@ -1,0 +1,1 @@
+ALTER TABLE x ADD COLUMN y text;

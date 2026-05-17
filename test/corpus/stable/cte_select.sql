@@ -1,0 +1,1 @@
+WITH q AS (SELECT * FROM x) SELECT * FROM q;
