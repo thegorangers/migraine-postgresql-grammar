@@ -16,7 +16,7 @@ purposes.
 ## Reporting a Vulnerability
 
 Please report suspected vulnerabilities privately to
-**security@thegorangers.com**.
+**security@gorangers.dev**.
 
 - We aim to acknowledge reports within **48 hours**.
 - Once a fix is available, we coordinate public disclosure after a **30-day
