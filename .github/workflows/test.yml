@@ -1,0 +1,35 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      # Generated ANTLR sources live under pkg/postgresql/ and are
+      # committed to the repo (downstream consumers `go get` them
+      # directly). CI does not regenerate them — that's an explicit
+      # `task generate` workflow that needs ANTLR4 + Java + Python and
+      # is run locally before tagging a new release.
+      - name: Test with coverage
+        run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
+
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.out
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
